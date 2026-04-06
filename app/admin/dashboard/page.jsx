@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import { Badge } from "@/components/ui/badge";
 
 export default function Page() {
   const { user, isAuthenticated, loading, clearSession, setSession } =
@@ -83,14 +84,19 @@ export default function Page() {
           <CardHeader>
             <CardTitle className="text-2xl">Welcome, Admin</CardTitle>
             <CardDescription>
-              Logged in as <span className="font-medium">{user.email}</span>
+              <span>Logged in as:</span>{" "}
+              <Badge className={`bg-orange-300 text-zinc-950`}>
+                {user.email}
+              </Badge>
             </CardDescription>
           </CardHeader>
 
           <CardContent className="grid gap-4 sm:grid-cols-2">
-            <div>
+            <div className="flex space-x-1.5">
               <p className="text-sm text-muted-foreground">Super Admin</p>
-              <p className="font-medium">{user.superAdmin ? "Yes" : "No"}</p>
+              <Badge className={`bg-orange-300 text-zinc-950`}>
+                {user.superAdmin ? "Yes" : "No"}
+              </Badge>
             </div>
           </CardContent>
         </Card>

@@ -165,7 +165,7 @@ export default function AdminManagementPage() {
       const data = await res.json();
 
       if (!res.ok) {
-        throw new Error(data.message || "Failed to delete admin");
+        toast.error(data.message || "Failed to delete admin");
       }
 
       toast.success("Admin deleted successfully");
