@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
+
 import { Button } from "./ui/button";
 import toast from "react-hot-toast";
 import { useDashboardStore } from "@/zustandStore/useDashboardStore";
@@ -41,8 +42,6 @@ const SemesterFees = () => {
   }, []);
 
   const handlePay = async ({ semester, courseCode, amount }) => {
-    toast.success(`Redirecting to payment gateway for Semester ${semester}...`);
-    
     try {
       const res = await fetch(`/api/student/payment/createOrder`, {
         method: "POST",
@@ -52,19 +51,57 @@ const SemesterFees = () => {
         credentials: "include",
         body: JSON.stringify({ semester, courseCode, amount }),
       });
+
       const data = await res.json();
+
       if (!data.success) {
-        toast.error(data?.message);
+        toast.error(data.message);
         return;
       }
-      if (data.success) {
-        toast.success(data?.message);
-      }
+
+      const options = {
+        key: data.key,
+        amount: data.order.amount,
+        currency: data.order.currency,
+        order_id: data.order.id,
+
+        name: "College Fees",
+        description: `Semester ${semester} Fee`,
+
+        handler: async function (response) {
+          // 🔥 VERIFY PAYMENT
+          const verifyRes = await fetch("/api/student/payment/verify", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            credentials: "include",
+            body: JSON.stringify(response),
+          });
+
+          const verifyData = await verifyRes.json();
+
+          if (verifyData.success) {
+            toast.success("Payment Successful ✅");
+
+            // 🔄 refresh UI
+            window.location.reload();
+          } else {
+            toast.error("Payment verification failed ❌");
+          }
+        },
+
+        theme: {
+          color: "#3399cc",
+        },
+      };
+
+      const rzp = new window.Razorpay(options);
+      rzp.open();
     } catch (error) {
-      console.error("Error initiating payment:", error);
-      toast.error("Failed to initiate payment. Please try again.");
+      console.error(error);
+      toast.error("Payment failed");
     }
-    // later: router.push(`/payment/${semesterId}`)
   };
 
   if (loading) {

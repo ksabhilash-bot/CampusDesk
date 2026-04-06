@@ -2,15 +2,9 @@ import { LogoutButton } from "@/components/Logout";
 import Link from "next/link";
 
 export const metadata = {
-  title: "Admin Dashboard | HIMT",
-  description:
-    "Admin dashboard for Hindu Institute of Management & Technology, Rohtak",
-  keywords: [
-    "HIMT",
-    "Hindu Institute Rohtak",
-    "Admin Dashboard",
-    "Student Payment System",
-  ],
+  title: "Admin Dashboard",
+  description: "Admin dashboard of CampusDesk",
+  keywords: ["Admin Dashboard", "Student Payment System"],
 };
 
 export default function AdminDashboardLayout({ children }) {

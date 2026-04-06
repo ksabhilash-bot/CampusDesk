@@ -1,9 +1,13 @@
+// app/api/student/payment/verify/route.js
+
 import crypto from "crypto";
 import Payment from "@/Model/Payment";
 import StudentFee from "@/Model/StudentFee";
 import { connectDB } from "@/lib/mongo";
 import { cookieStudent } from "@/lib/verifyCookie";
 import { NextResponse } from "next/server";
+import Student from "@/Model/Student";
+import Course from "@/Model/Course";
 
 export async function POST(req) {
   try {
@@ -12,130 +16,100 @@ export async function POST(req) {
 
     const studentId = req.cookies.get("student")?.value;
 
-    if (!studentId) {
-      return NextResponse.json(
-        { message: "Student not authenticated", success: false },
-        { status: 401 },
-      );
-    }
-
-    const { razorpayOrderId, razorpayPaymentId, razorpaySignature } =
+    const { razorpay_order_id, razorpay_payment_id, razorpay_signature } =
       await req.json();
 
-    // Input validation
-    if (!razorpayOrderId || !razorpayPaymentId || !razorpaySignature) {
-      return NextResponse.json(
-        { message: "Missing payment details", success: false },
-        { status: 400 },
-      );
-    }
-
-    // Verify Razorpay signature
+    // 🔐 verify signature
     const generatedSignature = crypto
       .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
-      .update(`${razorpayOrderId}|${razorpayPaymentId}`)
+      .update(`${razorpay_order_id}|${razorpay_payment_id}`)
       .digest("hex");
 
-    if (generatedSignature !== razorpaySignature) {
-      // Mark payment as failed
-      await Payment.findOneAndUpdate(
-        { razorpayOrderId, studentId },
-        {
-          status: "FAILED",
-          failureReason: "Invalid signature",
-        },
-      );
-
+    if (generatedSignature !== razorpay_signature) {
       return NextResponse.json(
-        {
-          message: "Invalid payment signature. Payment verification failed.",
-          success: false,
-        },
+        { success: false, message: "Invalid signature" },
         { status: 400 },
       );
     }
 
-    // Find payment record
+    // ✅ find payment
     const payment = await Payment.findOne({
-      razorpayOrderId,
+      razorpayOrderId: razorpay_order_id,
       studentId,
     });
 
     if (!payment) {
       return NextResponse.json(
-        { message: "Payment record not found", success: false },
+        { success: false, message: "Payment not found" },
         { status: 404 },
       );
     }
 
-    // Check if already processed
     if (payment.status === "PAID") {
-      return NextResponse.json(
-        {
-          message: "Payment already processed",
-          success: true,
-          alreadyProcessed: true,
-        },
-        { status: 200 },
-      );
+      return NextResponse.json({
+        success: true,
+        message: "Already processed",
+      });
     }
 
-    // Update payment record
-    payment.razorpayPaymentId = razorpayPaymentId;
-    payment.razorpaySignature = razorpaySignature;
+    // ✅ update payment
+    payment.razorpayPaymentId = razorpay_payment_id;
+    payment.razorpaySignature = razorpay_signature;
     payment.status = "PAID";
     await payment.save();
 
-    // Update student fee record
+    //update student current semester if payment is for current semester
+    const totalsem = await Course.findOne({ courseCode: payment.courseCode })
+      .select("totalSemesters")
+      .lean();
+    if (payment.semester > totalsem.totalSemesters) {
+      return NextResponse.json(
+        { success: false, message: "Invalid semester number" },
+        { status: 400 },
+      );
+    }
+
+    // ✅ update student fee
     const studentFee = await StudentFee.findOne({
       studentId: payment.studentId,
       courseCode: payment.courseCode,
       semester: payment.semester,
     });
 
-    if (!studentFee) {
-      return NextResponse.json(
-        { message: "Student fee record not found", success: false },
-        { status: 404 },
-      );
+    if (studentFee) {
+      studentFee.amountPaid += payment.amount;
+
+      const remaining = studentFee.SemesterFees - studentFee.amountPaid;
+
+      if (remaining <= 0) {
+        studentFee.status = "PAID";
+        studentFee.amountPaid = studentFee.SemesterFees;
+      } else {
+        studentFee.status = "PARTIAL";
+      }
+
+      await studentFee.save();
     }
 
-    // Update fee status
-    studentFee.amountPaid += payment.amount;
+    const student = await Student.findById(studentId).select("currentSemester");
 
-    const remainingBalance = studentFee.SemesterFees - studentFee.amountPaid;
-
-    if (remainingBalance <= 0) {
-      studentFee.status = "PAID";
-      // Ensure amountPaid doesn't exceed SemesterFees
-      studentFee.amountPaid = studentFee.SemesterFees;
-    } else if (studentFee.amountPaid > 0) {
-      studentFee.status = "PARTIAL";
+    if (
+      payment.semester === student.currentSemester &&
+      student.currentSemester < totalsem.totalSemesters
+    ) {
+      await Student.findByIdAndUpdate(studentId, {
+        $inc: { currentSemester: 1 },
+      });
     }
 
-    await studentFee.save();
-
-    return NextResponse.json(
-      {
-        message: "Payment verified successfully",
-        success: true,
-        paymentDetails: {
-          paymentId: razorpayPaymentId,
-          amount: payment.amount,
-        },
-        feeStatus: {
-          totalFee: studentFee.SemesterFees,
-          amountPaid: studentFee.amountPaid,
-          remainingBalance: Math.max(0, remainingBalance),
-          status: studentFee.status,
-        },
-      },
-      { status: 200 },
-    );
+    return NextResponse.json({
+      success: true,
+      message: "Payment verified successfully",
+    });
   } catch (error) {
-    console.error("Error verifying payment:", error);
+    console.error(error);
     return NextResponse.json(
-      { message: "Failed to verify payment", success: false },
+      { success: false, message: "Verification failed" },
       { status: 500 },
     );
   }

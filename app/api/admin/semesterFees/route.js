@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import SemesterFee from "@/Model/SemesterFee";
 import { connectDB } from "@/lib/mongo";
 import { cookieAdmin } from "@/lib/verifyCookie";
+import StudentFee from "@/Model/StudentFee";
 
 //to create a new semester fee record
 export async function POST(req) {
@@ -116,6 +117,16 @@ export async function PUT(req) {
         { status: 400 },
       );
     }
+
+    await StudentFee.findOneAndUpdate(
+      {
+        courseCode: courseCode.toUpperCase(),
+        semester,
+      },
+      {
+        SemesterFees: totalFees,
+      },
+    );
 
     const updatedSemesterFee = await SemesterFee.findOneAndUpdate(
       { courseCode: courseCode.toUpperCase(), semester },

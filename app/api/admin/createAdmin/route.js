@@ -5,6 +5,7 @@ import { hashPassword } from "@/lib/auth";
 import { cookieAdmin } from "@/lib/verifyCookie";
 //to create a new admin
 export async function POST(req) {
+  // admin1@gmail.com admin123
   try {
     await connectDB();
     await cookieAdmin(req);

@@ -148,7 +148,7 @@ export default function SemesterFeePage() {
       });
 
       const data = await res.json();
-      if (!res.ok) throw new Error(data.message || "Failed to delete fee");
+      if (!res.ok) toast.error(data.message || "Failed to delete fee");
 
       toast.success(data.message || "Fee record deleted successfully");
       fetchFees();

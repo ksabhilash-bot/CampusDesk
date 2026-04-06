@@ -1,4 +1,5 @@
 import { Geist, Geist_Mono } from "next/font/google";
+import Script from "next/script";
 import { Toaster } from "react-hot-toast";
 import "./globals.css";
 
@@ -13,19 +14,16 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "Himt Payment System",
-  description: "Payment Gateway made for students",
-  keywords: [
-    "HIMT",
-    "Hindu Institute Rohtak",
-    "Student Fee Payment",
-    "College Payment Portal",
-  ],
+  title: "CampusDesk - Student Fee Payment Portal",
+  description:
+    "Manage your college payments with ease using CampusDesk, the ultimate student fee payment portal.",
+  keywords: ["CampusDesk", "Student Fee Payment", "College Payment Portal"],
 };
 
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
+      <Script src="https://checkout.razorpay.com/v1/checkout.js" />
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >

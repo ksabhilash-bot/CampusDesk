@@ -378,11 +378,11 @@ export default function AdminManagementPage() {
                                 ? This action cannot be undone and will
                                 permanently remove this administrator's access.
                                 {admin.superAdmin && (
-                                  <p className="mt-2 text-destructive font-medium flex items-center gap-1">
+                                  <span className="mt-2 text-destructive font-medium flex items-center gap-1">
                                     <AlertCircle className="h-4 w-4" />
                                     This is a Super Admin account. Proceed with
                                     caution.
-                                  </p>
+                                  </span>
                                 )}
                               </AlertDialogDescription>
                             </AlertDialogHeader>
