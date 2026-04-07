@@ -179,24 +179,6 @@ export default function Page() {
                 </Button>
               </CardContent>
             </Card>
-
-            {/* Payments */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2 text-base">
-                  <CreditCard size={18} />
-                  Payments
-                </CardTitle>
-                <CardDescription>
-                  View payment history of students
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <Button asChild className="w-full">
-                  <Link href="/admin/payments">View Payments</Link>
-                </Button>
-              </CardContent>
-            </Card>
           </div>
         </section>
       </main>

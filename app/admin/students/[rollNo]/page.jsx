@@ -100,6 +100,7 @@ export default function StudentDetailsPage() {
       setStudent(data.student);
 
       setPayments(data.payments || []);
+
       setFees(data.fees || []);
 
       // Initialize edit form
@@ -144,13 +145,12 @@ export default function StudentDetailsPage() {
 
       const data = await res.json();
 
-      if (!res.ok) throw new Error(data.message || "Failed to update student");
+      if (!res.ok) toast.error(data.message || "Failed to update student");
 
       toast.success("Student details updated successfully");
       setIsEditDialogOpen(false);
       fetchStudentData();
     } catch (err) {
-      console.error("Update error:", err);
       toast.error(err.message || "Failed to update student details");
     } finally {
       setActionLoading(false);
@@ -176,8 +176,7 @@ export default function StudentDetailsPage() {
 
       const data = await res.json();
 
-      if (!res.ok)
-        throw new Error(data.message || "Failed to update fee status");
+      if (!res.ok) toast.error(data.message || "Failed to update fee status");
 
       toast.success(
         `Semester ${feeToUpdate.semester} fee updated successfully`,
@@ -186,7 +185,6 @@ export default function StudentDetailsPage() {
       setFeeToUpdate(null);
       fetchStudentData();
     } catch (err) {
-      console.error("Fee update error:", err);
       toast.error(err.message || "Failed to update fee status");
     } finally {
       setActionLoading(false);
@@ -216,7 +214,7 @@ export default function StudentDetailsPage() {
 
   if (loading) {
     return (
-      <div className="container py-8 space-y-6">
+      <div className="container py-8 space-y-6 px-3">
         <Skeleton className="h-10 w-64" />
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <Card className="lg:col-span-2">
@@ -273,7 +271,7 @@ export default function StudentDetailsPage() {
   }
 
   return (
-    <div className="container py-6 space-y-6">
+    <div className="container py-6 space-y-6 mx-auto">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
@@ -470,11 +468,10 @@ export default function StudentDetailsPage() {
                   <TableHeader>
                     <TableRow>
                       <TableHead>Date</TableHead>
-                      <TableHead>Transaction ID</TableHead>
+                      <TableHead>RazorpayOrder ID</TableHead>
                       <TableHead>Semester</TableHead>
                       <TableHead className="text-right">Amount</TableHead>
                       <TableHead className="text-center">Status</TableHead>
-                      <TableHead>Method</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -497,12 +494,15 @@ export default function StudentDetailsPage() {
                         return (
                           <TableRow key={payment._id}>
                             <TableCell>
-                              {payment.date
-                                ? format(new Date(payment.date), "dd MMM yyyy")
+                              {payment.updatedAt
+                                ? format(
+                                    new Date(payment.updatedAt),
+                                    "dd MMM yyyy",
+                                  )
                                 : "-"}
                             </TableCell>
                             <TableCell className="font-mono text-xs">
-                              {payment.transactionId || "N/A"}
+                              {payment.razorpayOrderId || "N/A"}
                             </TableCell>
                             <TableCell className="text-center">
                               {payment.semester || "-"}
@@ -516,11 +516,8 @@ export default function StudentDetailsPage() {
                                 className="gap-1"
                               >
                                 <StatusIcon className="h-3 w-3" />
-                                {statusConfig.label}
+                                {payment.status}
                               </Badge>
-                            </TableCell>
-                            <TableCell>
-                              {payment.paymentMethod || "Offline"}
                             </TableCell>
                           </TableRow>
                         );
