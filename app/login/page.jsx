@@ -173,8 +173,41 @@ export default function Page() {
   return (
     <div
       ref={bgRef}
+      style={{ background: "#0f0f13" }}
       className="relative flex min-h-screen items-center justify-center bg-zinc-50 dark:bg-black overflow-hidden p-4"
     >
+      <div
+        className="absolute rounded-full pointer-events-none"
+        style={{
+          width: 340,
+          height: 340,
+          background: "rgba(99,60,180,0.22)",
+          filter: "blur(80px)",
+          top: -80,
+          left: -60,
+        }}
+      />
+      <div
+        className="absolute rounded-full pointer-events-none"
+        style={{
+          width: 280,
+          height: 280,
+          background: "rgba(20,130,100,0.18)",
+          filter: "blur(80px)",
+          bottom: 20,
+          right: -40,
+        }}
+      />
+
+      {/* Subtle grid */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          backgroundImage: `linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px)`,
+          backgroundSize: "40px 40px",
+        }}
+      />
       {/* ── decorative orbs ───────────────────────────────────── */}
       <div
         ref={orb1Ref}
@@ -188,7 +221,7 @@ export default function Page() {
       {/* ── card ─────────────────────────────────────────────── */}
       <div
         ref={cardRef}
-        className="relative z-10 w-full max-w-sm rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-xl shadow-zinc-200/60 dark:shadow-black/40 overflow-hidden"
+        className="relative z-10 w-full max-w-sm rounded-2xl border dark:border-zinc-200 border-zinc-800 dark:bg-white bg-zinc-500 shadow-xl shadow-zinc-200/60 dark:shadow-black/40 overflow-hidden"
       >
         {/* top accent bar */}
         <div className="h-1 w-full bg-gradient-to-r from-zinc-400 via-zinc-700 to-zinc-400 dark:from-zinc-600 dark:via-zinc-300 dark:to-zinc-600" />
@@ -224,7 +257,7 @@ export default function Page() {
             <div ref={field1Ref} className="space-y-1.5">
               <Label
                 htmlFor="email"
-                className="text-xs font-medium text-zinc-600 dark:text-zinc-400 uppercase tracking-wider"
+                className="text-xs font-medium text-zinc-900 uppercase tracking-wider"
               >
                 Email
               </Label>
@@ -244,7 +277,7 @@ export default function Page() {
             <div ref={field2Ref} className="space-y-1.5">
               <Label
                 htmlFor="password"
-                className="text-xs font-medium text-zinc-600 dark:text-zinc-400 uppercase tracking-wider"
+                className="text-xs font-medium text-zinc-900 uppercase tracking-wider"
               >
                 Password
               </Label>
@@ -257,7 +290,7 @@ export default function Page() {
                 onFocus={() => handleFocus(field2Ref)}
                 onBlur={() => handleBlur(field2Ref)}
                 placeholder="••••••••"
-                className="rounded-lg border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800 focus:ring-2 focus:ring-zinc-900 dark:focus:ring-zinc-100 transition-all"
+                className="rounded-lg border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800 focus:ring-1 focus:ring-zinc-900 dark:focus:ring-zinc-100 transition-all "
               />
             </div>
 
@@ -268,7 +301,7 @@ export default function Page() {
                 onMouseDown={handleBtnDown}
                 onMouseUp={handleBtnUp}
                 onMouseLeave={handleBtnUp}
-                className="w-full rounded-lg bg-zinc-950 dark:bg-zinc-50 text-zinc-50 dark:text-zinc-950 hover:bg-zinc-800 dark:hover:bg-zinc-200 font-semibold tracking-wide transition-colors duration-200 h-11"
+                className="w-full rounded-lg bg-zinc-950 dark:bg-zinc-50 text-zinc-50 dark:text-zinc-950 hover:bg-white hover:text-zinc-950 dark:hover:bg-zinc-200 font-semibold tracking-wide transition-colors duration-200 h-11"
               >
                 {loading ? (
                   <Spinner className="h-4 w-4 animate-spin" />
@@ -284,11 +317,9 @@ export default function Page() {
             ref={footerRef}
             className="flex items-center justify-between pt-1 border-t border-zinc-100 dark:border-zinc-800"
           >
-            <span className="text-xs text-zinc-400 dark:text-zinc-600">
-              © CampusDesk
-            </span>
+            <span className="text-xs text-zinc-800">© CampusDesk</span>
             <Link href="/">
-              <button className="text-xs font-medium text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors duration-150 underline underline-offset-2">
+              <button className="text-xs font-medium text-zinc-950 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors duration-150 underline underline-offset-2">
                 ← Back to Home
               </button>
             </Link>

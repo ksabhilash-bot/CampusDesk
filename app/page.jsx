@@ -135,8 +135,50 @@ export default function Home() {
   ];
 
   return (
-    <div className="min-h-screen bg-zinc-50 dark:bg-black font-sans py-5">
-      <main className="mx-auto max-w-5xl px-6 py-20 bg-zinc-100 rounded-lg my-auto drop-shadow-2xl drop-shadow-zinc-800">
+    <div
+      className="min-h-screen font-sans py-8 relative overflow-hidden"
+      style={{ background: "#0f0f13" }}
+    >
+      <div
+        className="absolute rounded-full pointer-events-none"
+        style={{
+          width: 340,
+          height: 340,
+          background: "rgba(99,60,180,0.22)",
+          filter: "blur(80px)",
+          top: -80,
+          left: -60,
+        }}
+      />
+      <div
+        className="absolute rounded-full pointer-events-none"
+        style={{
+          width: 280,
+          height: 280,
+          background: "rgba(20,130,100,0.18)",
+          filter: "blur(80px)",
+          bottom: 20,
+          right: -40,
+        }}
+      />
+
+      {/* Subtle grid */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          backgroundImage: `linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px)`,
+          backgroundSize: "40px 40px",
+        }}
+      />
+      <main
+        className="relative mx-auto max-w-5xl px-6 py-16 rounded-2xl "
+        style={{
+          background: "rgba(24,24,30,0.85)",
+          border: "0.5px solid rgba(255,255,255,0.1)",
+          backdropFilter: "blur(12px)",
+        }}
+      >
         {/* ── Header ───────────────────────────────────────────── */}
         <header className="flex flex-col items-center text-center gap-6">
           <div ref={logoRef}>
@@ -152,19 +194,19 @@ export default function Home() {
 
           <h1
             ref={titleRef}
-            className="text-4xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50"
+            className="text-4xl font-bold tracking-tight dark:text-zinc-900 text-zinc-50"
           >
             CampusDesk
           </h1>
 
           <div
             ref={lineRef}
-            className="h-px w-24 bg-zinc-900 dark:bg-zinc-100"
+            className="h-px w-24 dark:bg-zinc-900 bg-zinc-100"
           />
 
           <p
             ref={subtitleRef}
-            className="max-w-2xl text-lg text-zinc-600 dark:text-zinc-400"
+            className="max-w-2xl text-lg dark:text-zinc-600 text-zinc-300"
           >
             College Management and administration system.
           </p>
@@ -172,7 +214,12 @@ export default function Home() {
           <Link
             ref={btnRef}
             href="/login"
-            className="rounded-full px-8 text-amber-50 p-2 bg-zinc-950 hover:text-zinc-950 hover:font-bold hover:bg-zinc-300 transition-colors duration-200"
+            className="rounded-full px-8 py-2.5 text-sm transition-all duration-200 hover:text-amber-50 hover:text-xl"
+            style={{
+              background: "rgba(140,100,255,0.18)",
+              border: "0.5px solid rgba(160,120,255,0.4)",
+              color: "#c8b8ff",
+            }}
           >
             Student Login
           </Link>
@@ -182,15 +229,19 @@ export default function Home() {
         <section className="mt-20 grid gap-8 md:grid-cols-2">
           {cards.map((item, i) => (
             <div
+              className="relative rounded-xl p-6 cursor-default overflow-hidden transition-all duration-200 "
+              style={{
+                background: "rgba(255,255,255,0.04)",
+                border: "0.5px solid rgba(255,255,255,0.09)",
+              }}
               key={item.title}
               ref={(el) => (cardsRef.current[i] = el)}
               onMouseEnter={() => handleMouseEnter(i)}
               onMouseLeave={() => handleMouseLeave(i)}
-              className="relative rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-6 shadow-sm cursor-default overflow-hidden"
             >
               {/* animated bottom border */}
               <div
-                className="card-border absolute bottom-0 left-0 h-[3px] w-full bg-zinc-900 dark:bg-zinc-100 origin-left"
+                className="card-border absolute bottom-0 left-0 h-[3px] w-full dark:bg-zinc-900 bg-zinc-100 origin-left"
                 style={{ transform: "scaleX(0)" }}
               />
 
@@ -200,12 +251,12 @@ export default function Home() {
               </span>
 
               {/* title */}
-              <h2 className="card-title text-2xl font-bold text-zinc-900 dark:text-zinc-50 mb-3">
+              <h2 className="card-title text-2xl font-bold dark:text-zinc-900 text-zinc-50 mb-3">
                 {item.title}
               </h2>
 
               {/* body */}
-              <p className="text-zinc-600 dark:text-zinc-400 leading-relaxed text-sm sm:text-base">
+              <p className="dark:text-zinc-600 text-zinc-400 leading-relaxed  text-sm sm:text-base">
                 {item.body}
               </p>
             </div>

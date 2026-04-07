@@ -186,7 +186,7 @@ export default function SemesterFeePage() {
             onSubmit={handleSubmit}
             className="grid grid-cols-1 md:grid-cols-4 gap-4"
           >
-            <div className="md:col-span-1">
+            <div className="md:col-span-1 space-y-1.5">
               <Label htmlFor="courseCode">Course Code</Label>
               <Input
                 id="courseCode"
@@ -197,7 +197,7 @@ export default function SemesterFeePage() {
                 required
               />
             </div>
-            <div className="md:col-span-1">
+            <div className="md:col-span-1 space-y-1.5">
               <Label htmlFor="semester">Semester</Label>
               <Input
                 id="semester"
@@ -210,7 +210,7 @@ export default function SemesterFeePage() {
                 required
               />
             </div>
-            <div className="md:col-span-1">
+            <div className="md:col-span-1 space-y-1.5">
               <Label htmlFor="totalFees">Total Fees (₹)</Label>
               <Input
                 id="totalFees"

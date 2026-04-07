@@ -202,7 +202,7 @@ export default function AdminManagementPage() {
             onSubmit={handleSubmit}
             className="grid grid-cols-1 md:grid-cols-4 gap-4"
           >
-            <div className="md:col-span-2">
+            <div className="md:col-span-2 space-y-1.5">
               <Label htmlFor="email">Email Address</Label>
               <Input
                 id="email"
@@ -215,7 +215,7 @@ export default function AdminManagementPage() {
                 disabled={formLoading}
               />
             </div>
-            <div className="md:col-span-2">
+            <div className="md:col-span-2 space-y-1.5">
               <Label htmlFor="password">Password</Label>
               <Input
                 id="password"
@@ -232,6 +232,7 @@ export default function AdminManagementPage() {
               <div className="flex items-center space-x-2">
                 <Checkbox
                   id="superAdmin"
+                  className={"border-zinc-800"}
                   name="superAdmin"
                   checked={form.superAdmin}
                   onCheckedChange={(checked) =>
